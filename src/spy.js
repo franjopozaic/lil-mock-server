@@ -53,7 +53,7 @@ function createProxy(port) {
       }
       log(request.body, 'REQUEST BODY');
     })
-    .listen(port + 1);
+    .listen(port + 1, () => console.log('Mock server listening on port: ' + port));
 }
 
 let mockData = {};
