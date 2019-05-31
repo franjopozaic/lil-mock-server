@@ -4,8 +4,8 @@
   "description": "",
   "main": "1.js",
   "scripts": {
-    "start:mock": "cd src && node mock.js",
-    "start:spy": "cd src && node spy.js"
+    "start:mock": "cd src && node mock.js 11080 12080",
+    "start:spy": "cd src && node spy.js 11080 12080 --debug"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +15,7 @@
     "redis": "2.8.0",
     "ws": "7.0.0",
     "util-promisifyall": "1.0.6",
-    "body-parser": "1.19.0"
+    "body-parser": "1.19.0",
+    "minimist": "1.2.0"
   }
 }
