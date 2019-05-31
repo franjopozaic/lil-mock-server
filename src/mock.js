@@ -1,10 +1,11 @@
 const fs = require('fs');
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const argv = require('minimist')(process.argv.slice(2));
 
 const MOCK_DATA_FILE_NAME = 'mock-data.json';
 
-const ports = [11080, 12080];
+const ports = argv._;
 
 console.log('...loading data...');
 var mockData = JSON.parse(fs.readFileSync(MOCK_DATA_FILE_NAME, 'utf8'));

@@ -3,9 +3,10 @@ const http = require('http');
 const promisify = require('util').promisify;
 const [readFile, writeFile] = [promisify(fs.readFile), promisify(fs.writeFile)];
 const express = require('express');
+const argv = require('minimist')(process.argv.slice(2));
 
-const ports = [11080, 12080];
-const ENABLE_LOGGING = false;
+const ports = argv._;
+const ENABLE_LOGGING = argv.debug && console.log('Debugging enabled!');
 
 ports.forEach(p => createProxy(p));
 
@@ -53,7 +54,7 @@ function createProxy(port) {
       }
       log(request.body, 'REQUEST BODY');
     })
-    .listen(port + 1, () => console.log('Mock server listening on port: ' + port));
+    .listen(port + 1, () => console.log(`*** Listening on port: ${port + 1}, spying on port ${port}. ***`));
 }
 
 let mockData = {};
