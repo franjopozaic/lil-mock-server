@@ -4,7 +4,8 @@
   "description": "",
   "main": "1.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:mock": "cd src && node mock.js",
+    "start:spy": "cd src && node spy.js"
   },
   "author": "",
   "license": "ISC",
