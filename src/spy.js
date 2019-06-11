@@ -4,6 +4,7 @@ const promisify = require('util').promisify;
 const [readFile, writeFile] = [promisify(fs.readFile), promisify(fs.writeFile)];
 const express = require('express');
 const argv = require('minimist')(process.argv.slice(2));
+const _merge = require('lodash.merge')
 
 const ports = argv._;
 const ENABLE_LOGGING = argv.debug && console.log('Debugging enabled!');
@@ -40,7 +41,8 @@ function createProxy(port) {
               path: request.path,
               method: request.method,
               body: JSON.parse(body.toString()),
-              status: resp.statusCode
+              status: resp.statusCode,
+              cookie: getCookie(resp.headers['set-cookie'], 'wemoui')
             })
           );
 
@@ -60,12 +62,13 @@ function createProxy(port) {
 let mockData = {};
 let currentUsername = '';
 
-function addData({ username, path, method, body, status }) {
+function addData({ username, path, method, body, status, cookie }) {
   path_method_key = `${path}_${method}`;
   mockData = {
     ...mockData,
     [username]: {
       ...mockData[username],
+      wemouiCookie: cookie,
       [path_method_key]: {
         body,
         status
@@ -82,10 +85,16 @@ function log(data, name, override) {
   console.log('-----------------');
 }
 
-const MOCK_DATA_FILE_NAME = 'mock-data.json';
+const MOCK_DATA_FILE_NAME = __dirname + '/mock-data.json';
 
 async function addToMock(data) {
   let oldData = JSON.parse(await readFile(MOCK_DATA_FILE_NAME, 'utf8'));
-  const newData = { ...oldData, ...data };
+  const newData = _merge(oldData, data);
   await writeFile(MOCK_DATA_FILE_NAME, JSON.stringify(newData), 'utf8');
+}
+
+function getCookie(cookies, name) {
+  const c = cookies.find(c => c.startsWith('wemoui'));
+  const match = c && c.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  if (match) return JSON.parse(decodeURIComponent(match[2]));
 }
