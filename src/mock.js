@@ -52,6 +52,7 @@ function createMockServer(port) {
         return;
       }
 
+      response.cookie('wemoui', JSON.stringify(userMockData['wemouiCookie']));
       response.cookie('username', username);
       response.status(status);
       response.end(JSON.stringify(body));
